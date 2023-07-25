@@ -55,15 +55,16 @@
  * This object is single instance only, and is mandatory to all LWM2M device as it describe the object such as its
  * manufacturer, model, etc...
  */
-
+#include "client.hpp"
+extern "C" {
 #include "liblwm2m.h"
-#include "client.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+}
 
 
 #define PRV_MANUFACTURER      "Open Mobile Alliance"

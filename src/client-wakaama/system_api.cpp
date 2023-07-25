@@ -23,12 +23,15 @@
  *  Author: Achim Kraus
  *  Copyright (c) 2014 Bosch Software Innovations GmbH, Germany. All rights reserved.
  */
+
+#include "client.hpp"
+extern "C" {
 #include "liblwm2m.h"
-#include "client.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+}
 
 #ifdef LWM2M_EMBEDDED_MODE
 
