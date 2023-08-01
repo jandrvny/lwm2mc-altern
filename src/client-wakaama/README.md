@@ -1,7 +1,7 @@
 # LwM2M client based on Wakaama SDK
 ___
-*This file is part of the [lwm2mc-altern](https://github.com/jandrvny/lwm2mc-altern) project, developed during an internship at Itron.
-By Jonathan Andrianarivony (jonathan.andrianarivony@itron.com).*
+*This file is part of the [lwm2mc-altern](https://github.com/jandrvny/lwm2mc-altern) project, as a part of an Itron's intern project. 
+Contributor : Jonathan Andrianarivony (jonathan.andrianarivony@itron.com).*
 ___
 
 ## Description

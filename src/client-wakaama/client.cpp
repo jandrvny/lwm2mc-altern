@@ -73,9 +73,7 @@ extern "C" {
 #include "commandline.h"
 
 #ifdef WITH_TINYDTLS
-extern "C" {
 #include "dtlsconnection.h"
-}
 #else
 #include "connection.h"
 #endif

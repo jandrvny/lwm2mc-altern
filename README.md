@@ -1,10 +1,10 @@
 # lwm2mc-altern
 ___
-*As part of my internship at Itron, this project aims to develop an LwM2M client based on an open SDK as an alternative to the current client developed with the IOWA SDK.*
+*Alongside to an Itron intern project, this project aims to develop an LwM2M client based on an open SDK as an alternative to a current client developed with the IOWA SDK. This project was initiated as part of an internship at Itron.*
 ___
 ## Description
 
-lwm2mc-altern is a project developed during my internship at Itron. It is associated with the Edge Gateway project, which aims to produce an LwM2M client for an embedded Linux-based edge gateway, enabling device management.
+lwm2mc-altern is associated with the Edge Gateway project, which aims to produce an LwM2M client for an embedded Linux-based edge gateway, enabling device management.
 
 lwm2mc-altern aims to develop one or more LwM2M clients (mostly executable through the command line) based on an open-source SDK as an alternative to the current client developed with the IOWA SDK. The objective is to have a client that offers the same functionalities as the current one.
 
