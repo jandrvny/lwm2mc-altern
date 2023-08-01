@@ -67,7 +67,8 @@
     Jonathan Andrianarivony <jonathan.andrianarivony@itron.com> 
  **************************************************************/
 
-#include "client.h"
+#include "client.hpp"
+extern "C" {
 #include "liblwm2m.h"
 #include "commandline.h"
 
@@ -92,6 +93,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+}
 
 
 
