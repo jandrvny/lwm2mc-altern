@@ -1,7 +1,7 @@
 set(ROOT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}")
 set(SRC_DIRECTORY "${ROOT_DIRECTORY}/src")
 set(WAKAAMA_DIRECTORY "${ROOT_DIRECTORY}/libs/wakaama")
-set(WAKAAMA_TOOLS_DIRECTORY "${WAKAAMA_DIRECTORY}/tools")
+set(WAKAAMA_TOOLS_DIRECTORY "${WAKAAMA_DIRECTORY}/examples/shared")
 
 # Add data format source files to an existing target.
 #
