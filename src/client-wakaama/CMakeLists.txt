@@ -1,19 +1,19 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(client)
+project(client C)
 #set(CMAKE_CXX_STANDARD 14)
 
 include(../../lwm2mc-altern.cmake)
 
 set(SOURCES
-    client.cpp
-    client.hpp
-    object_access_control.cpp
-    object_device.cpp
-    object_firmware.cpp
-    object_security.cpp
-    object_server.cpp
-    system_api.cpp
+    client.c
+    client.h
+    object_access_control.c
+    object_device.c
+    object_firmware.c
+    object_security.c
+    object_server.c
+    system_api.c
 )
 
 # Client without DTLS support

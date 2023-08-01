@@ -43,13 +43,12 @@
  * Here we implement a very basic LWM2M Security Object which only knows NoSec security mode.
  */
 
-extern "C" {
 #include "liblwm2m.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-}
+
 
 typedef struct _security_instance_
 {

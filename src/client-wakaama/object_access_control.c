@@ -30,14 +30,12 @@
  *  Access Control Owner |  3 |   RW  | Single|  Yes | Integer |0-65535|       |
  */
 
-extern "C" {
 #include "liblwm2m.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-}
 
 // Resource Id's:
 #define RES_M_OBJECT_ID             0
