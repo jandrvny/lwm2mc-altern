@@ -1069,8 +1069,8 @@ int main(int argc, char *argv[])
     if (psk != NULL)
     {
         pskLen = strlen(psk) / 2;
-        pskBuffer = malloc(pskLen); 
-        //pskBuffer = static_cast<char*>(malloc(pskLen)); // CPP Modification
+        //pskBuffer = malloc(pskLen);                   // Original C code
+        pskBuffer = static_cast<char*>(malloc(pskLen)); // CPP Modification
 
         if (NULL == pskBuffer)
         {
