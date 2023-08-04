@@ -31,23 +31,8 @@
 #define LWM2MCLIENT_H_
 
 #include "liblwm2m.h"
-#include "connection.h"
-#include "object_utils.h"
-#include "commandline.h"
-#if defined(DTLS)
-#include "dtlsconnection.h"
-#endif
 
 extern int g_reboot;
-
-typedef struct {
-    lwm2m_object_t *securityObjP;
-    lwm2m_object_t *serverObject;
-    int sock;
-    lwm2m_context_t *ctx;
-    lwm2m_connection_layer_t *connLayer;
-    int addressFamily;
-} client_data_t;
 
 /*
  * object_device.c

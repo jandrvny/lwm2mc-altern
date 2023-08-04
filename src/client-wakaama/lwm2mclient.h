@@ -14,40 +14,23 @@
  *    Bosch Software Innovations GmbH - Please refer to git log
  *
  *******************************************************************************/
-
-/**************************************************************
-    client.h/cpp files, from lwm2mc-altern repository, is based on Wakaama 
-    respository examples and modified to fit the needs of the project.
-    Wakaama repository is available at: https://github.com/eclipse/wakaama
-    
-    The code is under the terms of the Eclipse Public License v2.0 and Eclipse 
-    Distribution License v1.0 and the previous copyright notice.
-
-    Jonathan Andrianarivony <jonathan.andrianarivony@itron.com> 
- **************************************************************/
-
+/*
+ * lwm2mclient.h
+ *
+ *  General functions of lwm2m test client.
+ *
+ *  Created on: 22.01.2015
+ *  Author: Achim Kraus
+ *  Copyright (c) 2015 Bosch Software Innovations GmbH, Germany. All rights reserved.
+ */
 
 #ifndef LWM2MCLIENT_H_
 #define LWM2MCLIENT_H_
 
-#include "liblwm2m.h"
 #include "connection.h"
-#include "object_utils.h"
-#include "commandline.h"
-#if defined(DTLS)
-#include "dtlsconnection.h"
-#endif
+#include "liblwm2m.h"
 
 extern int g_reboot;
-
-typedef struct {
-    lwm2m_object_t *securityObjP;
-    lwm2m_object_t *serverObject;
-    int sock;
-    lwm2m_context_t *ctx;
-    lwm2m_connection_layer_t *connLayer;
-    int addressFamily;
-} client_data_t;
 
 /*
  * object_device.c
@@ -63,12 +46,41 @@ lwm2m_object_t * get_object_firmware(void);
 void free_object_firmware(lwm2m_object_t * objectP);
 void display_firmware_object(lwm2m_object_t * objectP);
 /*
+ * object_location.c
+ */
+lwm2m_object_t * get_object_location(void);
+void free_object_location(lwm2m_object_t * object);
+void display_location_object(lwm2m_object_t * objectP);
+/*
+ * object_test.c
+ */
+#define TEST_OBJECT_ID 31024
+lwm2m_object_t * get_test_object(void);
+void free_test_object(lwm2m_object_t * object);
+void display_test_object(lwm2m_object_t * objectP);
+/*
  * object_server.c
  */
 lwm2m_object_t * get_server_object(int serverId, const char* binding, int lifetime, bool storing);
 void clean_server_object(lwm2m_object_t * object);
 void display_server_object(lwm2m_object_t * objectP);
 void copy_server_object(lwm2m_object_t * objectDest, lwm2m_object_t * objectSrc);
+
+/*
+ * object_connectivity_moni.c
+ */
+lwm2m_object_t * get_object_conn_m(void);
+void free_object_conn_m(lwm2m_object_t * objectP);
+uint8_t connectivity_moni_change(lwm2m_data_t * dataArray, lwm2m_object_t * objectP);
+
+/*
+ * object_connectivity_stat.c
+ */
+extern lwm2m_object_t * get_object_conn_s(void);
+void free_object_conn_s(lwm2m_object_t * objectP);
+extern void conn_s_updateTxStatistic(lwm2m_object_t * objectP, uint16_t txDataByte, bool smsBased);
+extern void conn_s_updateRxStatistic(lwm2m_object_t * objectP, uint16_t rxDataByte, bool smsBased);
+
 /*
  * object_access_control.c
  */
@@ -96,5 +108,14 @@ void clean_security_object(lwm2m_object_t * objectP);
 char * get_server_uri(lwm2m_object_t * objectP, uint16_t secObjInstID);
 void display_security_object(lwm2m_object_t * objectP);
 void copy_security_object(lwm2m_object_t * objectDest, lwm2m_object_t * objectSrc);
+
+typedef struct {
+    lwm2m_object_t *securityObjP;
+    lwm2m_object_t *serverObject;
+    lwm2m_context_t *ctx;
+    int sock;
+    lwm2m_connection_layer_t *connLayer;
+    int addressFamily;
+} client_data_t;
 
 #endif /* LWM2MCLIENT_H_ */

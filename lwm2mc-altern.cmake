@@ -1,11 +1,18 @@
+
+set(ROOT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}")
+set(SRC_DIRECTORY "${ROOT_DIRECTORY}/src")
+set(MBEDTLS_DIRECTORY "${ROOT_DIRECTORY}/libs/mbedtls")
+
 ################################################################################
 #########               WAKAAAMA CMake configuration                   ######### 
 ################################################################################
 
-set(ROOT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}")
-set(SRC_DIRECTORY "${ROOT_DIRECTORY}/src")
 set(WAKAAMA_DIRECTORY "${ROOT_DIRECTORY}/libs/wakaama")
 set(WAKAAMA_TOOLS_DIRECTORY "${WAKAAMA_DIRECTORY}/examples/shared")
+set(WAKAAMA_CLIENT_DIRECTORY "${SRC_DIRECTORY}/client-wakaama")
+set(WAKAAMA_MBEDTLS_TOOLS_DIRECTORY "${WAKAAMA_CLIENT_DIRECTORY}/mbedtls-tools")
+set(MBEDTLS_SRC_SUBDIR "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/mbedtls")
+set(MBEDTLS_BIN_SUBDIR "${CMAKE_CURRENT_BINARY_DIR}/mbedtls")
 
 # Add data format source files to an existing target.
 function(target_sources_data target)
@@ -51,6 +58,7 @@ function(target_sources_wakaama target)
             ${WAKAAMA_DIRECTORY}/core/utils.c
     )
     target_include_directories(${target} PRIVATE ${WAKAAMA_DIRECTORY}/include)
+    #target_include_directories(${target} PRIVATE ${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY})
     target_include_directories(${target} PRIVATE ${WAKAAMA_DIRECTORY}/core)
     
 
@@ -85,22 +93,34 @@ function(target_sources_wakaama target)
     target_sources_data(${target})
 endfunction()
 
-##### Add shared source files to the target.
-function(target_sources_shared target)
+##### Add additional source files to the target.
+function(target_sources_add target)
     get_target_property(TARGET_PROPERTY_DTLS ${target} DTLS)
 
     target_sources(
-        ${target} PRIVATE ${WAKAAMA_TOOLS_DIRECTORY}/commandline.c
-                          ${WAKAAMA_TOOLS_DIRECTORY}/platform.c
+        ${target} PRIVATE ${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/commandline.c
+                          ${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/platform.c
+                          ${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/memtrace.c
+                          ${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/connection.c
+                          ${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/object_utils.c
     )
+    target_include_directories(${target} PRIVATE ${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY})
 
     if(NOT TARGET_PROPERTY_DTLS)
-        target_sources(${target} PRIVATE ${WAKAAMA_TOOLS_DIRECTORY}/connection.c)
-    elseif(TARGET_PROPERTY_DTLS MATCHES "tinydtls")
-        include(${WAKAAMA_TOOLS_DIRECTORY}/tinydtls.cmake)
-        target_sources(${target} PRIVATE ${WAKAAMA_TOOLS_DIRECTORY}/dtlsconnection.c)
-        target_compile_definitions(${target} PRIVATE WITH_TINYDTLS)
-        target_sources_tinydtls(${target})
+    #elseif(TARGET_PROPERTY_DTLS MATCHES "tinydtls")
+        #include(${WAKAAMA_TOOLS_DIRECTORY}/tinydtls.cmake)
+    #    target_sources(${target} PRIVATE ${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/dtlsconnection.c)
+    #    target_compile_definitions(${target} PRIVATE WITH_TINYDTLS)
+    #    target_sources_tinydtls(${target})
+    elseif(TARGET_PROPERTY_DTLS MATCHES "mbedtls")
+        set(DTLS TRUE)
+        target_sources(${target} PRIVATE ${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/mbedtlsconnection.c)
+        # add config for mbedtls
+        add_compile_definitions(MBEDTLS_CONFIG_FILE="${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/config-ccm-psk-tls1_2.h")
+        add_subdirectory(${MBEDTLS_SRC_SUBDIR} ${MBEDTLS_BIN_SUBDIR}) # Trick to add mbedtls as subdirectory
+        # add config for target which use mbedtls
+        target_compile_definitions(mbedtls PUBLIC MBEDTLS_CONFIG_FILE="${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/config-ccm-psk-tls1_2.h")
+        target_link_libraries(${target} PRIVATE mbedtls)
     else()
         message(FATAL_ERROR "${target}: Unknown DTLS implementation '${TARGET_PROPERTY_DTLS} requested")
     endif()

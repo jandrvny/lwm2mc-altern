@@ -56,19 +56,15 @@
 
 */
 
-/**************************************************************
-    client.h/cpp files, from lwm2mc-altern repository, is based on Wakaama 
-    respository examples and modified to fit the needs of the project.
-    Wakaama repository is available at: https://github.com/eclipse/wakaama
-    
-    The code is under the terms of the Eclipse Public License v2.0 and Eclipse 
-    Distribution License v1.0 and the previous copyright notice.
+#include "lwm2mclient.h"
+#include "liblwm2m.h"
+#include "commandline.h"
+#if defined(DTLS)
+#include "dtlsconnection.h"
+#endif
 
-    Jonathan Andrianarivony <jonathan.andrianarivony@itron.com> 
- **************************************************************/
-
-#include "client.h"
-
+#include "connection.h"
+#include "object_utils.h"
 #include <arpa/inet.h>
 #include <ctype.h>
 #include <errno.h>
@@ -92,7 +88,7 @@
 int g_reboot = 0;
 static int g_quit = 0;
 
-#define OBJ_COUNT 5
+#define OBJ_COUNT 9
 lwm2m_object_t * objArray[OBJ_COUNT];
 
 // only backup security and server objects
@@ -493,13 +489,11 @@ static void prv_update(lwm2m_context_t * lwm2mH,
 {
     /* unused parameter */
     (void)user_data;
-    uint16_t serverId;
-    int res;
 
     if (buffer[0] == 0) goto syntax_error;
 
-    serverId = (uint16_t) atoi(buffer);
-    res = lwm2m_update_registration(lwm2mH, serverId, false);
+    uint16_t serverId = (uint16_t) atoi(buffer);
+    int res = lwm2m_update_registration(lwm2mH, serverId, false);
     if (res != 0)
     {
         fprintf(stdout, "Registration update error: ");
@@ -540,6 +534,59 @@ static void update_battery_level(lwm2m_context_t * context)
     }
 }
 
+static void prv_add(lwm2m_context_t * lwm2mH,
+                    char * buffer,
+                    void * user_data)
+{
+    lwm2m_object_t * objectP;
+    int res;
+
+    /* unused parameter */
+    (void)user_data;
+
+    objectP = get_test_object();
+    if (objectP == NULL)
+    {
+        fprintf(stdout, "Creating object 31024 failed.\r\n");
+        return;
+    }
+    res = lwm2m_add_object(lwm2mH, objectP);
+    if (res != 0)
+    {
+        fprintf(stdout, "Adding object 31024 failed: ");
+        print_status(stdout, res);
+        fprintf(stdout, "\r\n");
+    }
+    else
+    {
+        fprintf(stdout, "Object 31024 added.\r\n");
+    }
+    return;
+}
+
+static void prv_remove(lwm2m_context_t * lwm2mH,
+                       char * buffer,
+                       void * user_data)
+{
+    int res;
+
+    /* unused parameter */
+    (void)user_data;
+
+    res = lwm2m_remove_object(lwm2mH, 31024);
+    if (res != 0)
+    {
+        fprintf(stdout, "Removing object 31024 failed: ");
+        print_status(stdout, res);
+        fprintf(stdout, "\r\n");
+    }
+    else
+    {
+        fprintf(stdout, "Object 31024 removed.\r\n");
+    }
+    return;
+}
+
 #ifdef LWM2M_BOOTSTRAP
 
 static void prv_initiate_bootstrap(lwm2m_context_t * lwm2mH,
@@ -558,6 +605,48 @@ static void prv_initiate_bootstrap(lwm2m_context_t * lwm2mH,
     {
         targetP->lifetime = 0;
         targetP = targetP->next;
+    }
+}
+
+static void prv_display_objects(lwm2m_context_t * lwm2mH,
+                                char * buffer,
+                                void * user_data)
+{
+    lwm2m_object_t * object;
+
+    /* unused parameter */
+    (void)user_data;
+
+    for (object = lwm2mH->objectList; object != NULL; object = object->next){
+        if (NULL != object) {
+            switch (object->objID)
+            {
+            case LWM2M_SECURITY_OBJECT_ID:
+                display_security_object(object);
+                break;
+            case LWM2M_SERVER_OBJECT_ID:
+                display_server_object(object);
+                break;
+            case LWM2M_ACL_OBJECT_ID:
+                break;
+            case LWM2M_DEVICE_OBJECT_ID:
+                display_device_object(object);
+                break;
+            case LWM2M_CONN_MONITOR_OBJECT_ID:
+                break;
+            case LWM2M_FIRMWARE_UPDATE_OBJECT_ID:
+                display_firmware_object(object);
+                break;
+            case LWM2M_LOCATION_OBJECT_ID:
+                display_location_object(object);
+                break;
+            case LWM2M_CONN_STATS_OBJECT_ID:
+                break;
+            case TEST_OBJECT_ID:
+                display_test_object(object);
+                break;
+            }
+        }
     }
 }
 
@@ -687,37 +776,6 @@ static void close_backup_object()
 }
 #endif
 
-static void prv_display_objects(lwm2m_context_t *lwm2mH, char *buffer, void *user_data) {
-    lwm2m_object_t *object;
-
-    /* unused parameter */
-    (void)user_data;
-
-    for (object = lwm2mH->objectList; object != NULL; object = object->next) {
-        if (NULL != object) {
-            switch (object->objID) {
-            case LWM2M_SECURITY_OBJECT_ID:
-                display_security_object(object);
-                break;
-            case LWM2M_SERVER_OBJECT_ID:
-                display_server_object(object);
-                break;
-            case LWM2M_ACL_OBJECT_ID:
-                break;
-            case LWM2M_DEVICE_OBJECT_ID:
-                display_device_object(object);
-                break;
-            case LWM2M_FIRMWARE_UPDATE_OBJECT_ID:
-                display_firmware_object(object);
-                break;
-            default:
-                fprintf(stdout, "unknown object ID: %" PRIu16 "\n", object->objID);
-                break;
-            }
-        }
-    }
-}
-
 void print_usage(void)
 {
     fprintf(stdout, "Usage: lwm2mclient [OPTION]\r\n");
@@ -726,13 +784,13 @@ void print_usage(void)
     fprintf(stdout, "  -n NAME\tSet the endpoint name of the Client. Default: testlwm2mclient\r\n");
     fprintf(stdout, "  -l PORT\tSet the local UDP port of the Client. Default: 56830\r\n");
     fprintf(stdout, "  -h HOST\tSet the hostname of the LWM2M Server to connect to. Default: localhost\r\n");
-    fprintf(stdout, "  -p PORT\tSet the port of the LWM2M Server to connect to. Default: " LWM2M_STANDARD_PORT_STR "\r\n");
+    fprintf(stdout, "  -p PORT\tSet the port of the LWM2M Server to connect to. Default: "LWM2M_STANDARD_PORT_STR"\r\n");
     fprintf(stdout, "  -4\t\tUse IPv4 connection. Default: IPv6 connection\r\n");
     fprintf(stdout, "  -t TIME\tSet the lifetime of the Client. Default: 300\r\n");
     fprintf(stdout, "  -b\t\tBootstrap requested.\r\n");
     fprintf(stdout, "  -c\t\tChange battery level over time.\r\n");
     fprintf(stdout, "  -S BYTES\tCoAP block size. Options: 16, 32, 64, 128, 256, 512, 1024. Default: %" PRIu16 "\r\n",
-            (uint16_t)LWM2M_COAP_DEFAULT_BLOCK_SIZE);
+            LWM2M_COAP_DEFAULT_BLOCK_SIZE);
 #if defined DTLS
     fprintf(stdout, "  -i STRING\tSet the device management or bootstrap server PSK identity. If not set use none secure mode\r\n");
     fprintf(stdout, "  -s HEXSTRING\tSet the device management or bootstrap server Pre-Shared-Key. If not set use none secure mode\r\n");
@@ -748,8 +806,7 @@ int main(int argc, char *argv[])
     const char * localPort = "56830";
     const char * server = NULL;
     const char * serverPort = LWM2M_STANDARD_PORT_STR;
-    //char *name = "testlwm2mclient";
-    const char *name = "testlwm2mclient";
+    char * name = "testlwm2mclient";
     int lifetime = 300;
     int batterylevelchanging = 0;
     time_t reboot_time = 0;
@@ -762,8 +819,8 @@ int main(int argc, char *argv[])
 #endif
 
     char * pskId = NULL;
-#ifdef DTLS
-    char * psk = NULL;
+#if defined DTLS
+    char *psk = NULL;
 #endif
     uint16_t pskLen = -1;
     char * pskBuffer = NULL;
@@ -792,6 +849,8 @@ int main(int argc, char *argv[])
             {"disp", "Display current objects/instances/resources", NULL, prv_display_objects, NULL},
             {"dump", "Dump an Object", "dump URI"
                                        "URI: uri of the Object or Instance such as /3/0, /1\r\n", prv_object_dump, NULL},
+            {"add", "Add support of object 31024", NULL, prv_add, NULL},
+            {"rm", "Remove support of object 31024", NULL, prv_remove, NULL},
             {"quit", "Quit the client gracefully.", NULL, prv_quit, NULL},
             {"^C", "Quit the client abruptly (without sending a de-register message).", NULL, NULL, NULL},
 
@@ -833,7 +892,7 @@ int main(int argc, char *argv[])
                 return 0;
             }
             break;
-#ifdef DTLS
+#if defined DTLS
         case 'i':
             opt++;
             if (opt >= argc)
@@ -934,12 +993,11 @@ int main(int argc, char *argv[])
      * Now the main function fill an array with each object, this list will be later passed to liblwm2m.
      * Those functions are located in their respective object file.
      */
-#ifdef DTLS
+#if DTLS
     if (psk != NULL)
     {
         pskLen = strlen(psk) / 2;
         pskBuffer = malloc(pskLen);
-        //pskBuffer = static_cast<char*>(malloc(pskLen)); // CPP Modification
 
         if (NULL == pskBuffer)
         {
@@ -969,7 +1027,7 @@ int main(int argc, char *argv[])
 
     char serverUri[50];
     int serverId = 123;
-#ifdef DTLS
+#if defined DTLS
     sprintf (serverUri, "coaps://%s:%s", server, serverPort);
 #else
     sprintf (serverUri, "coap://%s:%s", server, serverPort);
@@ -1007,24 +1065,52 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    int instId = 0;
-    objArray[4] = acc_ctrl_create_object();
+    objArray[4] = get_object_location();
     if (NULL == objArray[4])
+    {
+        fprintf(stderr, "Failed to create location object\r\n");
+        return -1;
+    }
+
+    objArray[5] = get_test_object();
+    if (NULL == objArray[5])
+    {
+        fprintf(stderr, "Failed to create test object\r\n");
+        return -1;
+    }
+
+    objArray[6] = get_object_conn_m();
+    if (NULL == objArray[6])
+    {
+        fprintf(stderr, "Failed to create connectivity monitoring object\r\n");
+        return -1;
+    }
+
+    objArray[7] = get_object_conn_s();
+    if (NULL == objArray[7])
+    {
+        fprintf(stderr, "Failed to create connectivity statistics object\r\n");
+        return -1;
+    }
+
+    int instId = 0;
+    objArray[8] = acc_ctrl_create_object();
+    if (NULL == objArray[8])
     {
         fprintf(stderr, "Failed to create Access Control object\r\n");
         return -1;
     }
-    else if (acc_ctrl_obj_add_inst(objArray[4], instId, 3, 0, serverId)==false)
+    else if (acc_ctrl_obj_add_inst(objArray[8], instId, 3, 0, serverId)==false)
     {
         fprintf(stderr, "Failed to create Access Control object instance\r\n");
         return -1;
     }
-    else if (acc_ctrl_oi_add_ac_val(objArray[4], instId, 0, 0xF /* == 0b000000000001111 */)==false)
+    else if (acc_ctrl_oi_add_ac_val(objArray[8], instId, 0, 0xF /* == 0b000000000001111 */)==false)
     {
         fprintf(stderr, "Failed to create Access Control ACL default resource\r\n");
         return -1;
     }
-    else if (acc_ctrl_oi_add_ac_val(objArray[4], instId, 999, 0x1 /* == 0b000000000000001 */)==false)
+    else if (acc_ctrl_oi_add_ac_val(objArray[8], instId, 999, 0x1 /* == 0b000000000000001 */)==false)
     {
         fprintf(stderr, "Failed to create Access Control ACL resource for serverId: 999\r\n");
         return -1;
@@ -1143,8 +1229,8 @@ int main(int argc, char *argv[])
         }
         if (result != 0)
         {
-            fprintf(stderr, "lwm2m_step() failed: 0x%X\r\n", result);
 #ifdef LWM2M_BOOTSTRAP
+            fprintf(stderr, "lwm2m_step() failed: 0x%X\r\n", result);
             if(previousState == STATE_BOOTSTRAPPING)
             {
 #ifdef LWM2M_WITH_LOGS
@@ -1231,10 +1317,8 @@ int main(int argc, char *argv[])
                         /*
                          * Let liblwm2m respond to the query depending on the context
                          */
-                        /*
                         connectionlayer_handle_packet(data.connLayer, &addr, addrLen, buffer, numBytes);
                         conn_s_updateRxStatistic(objArray[7], numBytes, false);
-                        */
                     }
                     else
                     {
@@ -1272,8 +1356,7 @@ int main(int argc, char *argv[])
     }
 
     /*
-     * Finally when the loop is left smoothly asked by user in the command line interface 
-     * we unregister our client from it
+     * Finally when the loop is left smoothly - asked by user in the command line interface - we unregister our client from it
      */
     if (g_quit == 1)
     {
@@ -1295,7 +1378,11 @@ int main(int argc, char *argv[])
     lwm2m_free(objArray[1]);
     free_object_device(objArray[2]);
     free_object_firmware(objArray[3]);
-        acl_ctrl_free_object(objArray[4]);
+    free_object_location(objArray[4]);
+    free_test_object(objArray[5]);
+    free_object_conn_m(objArray[6]);
+    free_object_conn_s(objArray[7]);
+    acl_ctrl_free_object(objArray[8]);
 
 #ifdef MEMORY_TRACE
     if (g_quit == 1)
