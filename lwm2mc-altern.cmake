@@ -114,18 +114,20 @@ function(target_sources_add target)
     #    target_sources_tinydtls(${target})
     elseif(TARGET_PROPERTY_DTLS MATCHES "mbedtls")
         set(DTLS TRUE)
+        set(ENABLE_TESTING Off)
         target_sources(${target} PRIVATE ${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/mbedtlsconnection.c)
         # add config for mbedtls
-        add_compile_definitions(MBEDTLS_CONFIG_FILE="${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/config-ccm-psk-tls1_2.h")
+        add_compile_definitions(MBEDTLS_CONFIG_FILE="${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/config-ccm-psk-dtls1_2.h")
         add_subdirectory(${MBEDTLS_SRC_SUBDIR} ${MBEDTLS_BIN_SUBDIR}) # Trick to add mbedtls as subdirectory
+        #add_subdirectory(mbedtls)
         # add config for target which use mbedtls
-        target_compile_definitions(mbedtls PUBLIC MBEDTLS_CONFIG_FILE="${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/config-ccm-psk-tls1_2.h")
+        target_compile_definitions(mbedtls PUBLIC MBEDTLS_CONFIG_FILE="${WAKAAMA_MBEDTLS_TOOLS_DIRECTORY}/config-ccm-psk-dtls1_2.h")
         target_link_libraries(${target} PRIVATE mbedtls)
     else()
         message(FATAL_ERROR "${target}: Unknown DTLS implementation '${TARGET_PROPERTY_DTLS} requested")
     endif()
 
-    target_include_directories(${target} PUBLIC ${WAKAAMA_TOOLS_DIRECTORY})
+    #target_include_directories(${target} PUBLIC ${WAKAAMA_TOOLS_DIRECTORY})
 endfunction()
 
 # Enforce a certain level of hygiene

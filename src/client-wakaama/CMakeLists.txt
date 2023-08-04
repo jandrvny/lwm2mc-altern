@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.13)
 
-add_compile_options(-Wno-error=switch-default)
+add_compile_options(
+    -Wno-error=switch-default
+    #-Wno-error=discarded-qualifiers
+)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-error")
+
 project(client C)
 #set(CMAKE_CXX_STANDARD 14)
 
@@ -33,6 +38,6 @@ target_sources_add(client)
 # Client with DTLS support provided by mbedtls
 add_executable(client_mbedtls ${SOURCES})
 set_target_properties(client_mbedtls PROPERTIES DTLS "mbedtls")
-target_compile_definitions(client_mbedtls PRIVATE LWM2M_CLIENT_MODE LWM2M_BOOTSTRAP LWM2M_SUPPORT_TLV)
+target_compile_definitions(client_mbedtls PRIVATE LWM2M_CLIENT_MODE LWM2M_BOOTSTRAP LWM2M_SUPPORT_TLV DTLS)
 target_sources_wakaama(client_mbedtls)
 target_sources_add(client_mbedtls)
