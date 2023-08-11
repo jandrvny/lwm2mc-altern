@@ -23,11 +23,6 @@ typedef void (*command_handler_t) (lwm2m_context_t *lwm2mH, char * args, void * 
 
 typedef struct
 {
-    /*
-    char *            name;
-    char *            shortDesc;
-    char *            longDesc;
-    */
     const char *name;
     const char *shortDesc;
     const char *longDesc;

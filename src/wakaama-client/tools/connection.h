@@ -43,14 +43,14 @@ typedef struct _connection_t {
     int sock;
     struct sockaddr_in6 addr;
     size_t addrLen;
-    connection_send_func_t  sendFunc;
-    connection_recv_func_t  recvFunc;
-    connection_deinit_func_t    deinitFunc;
+    connection_send_func_t sendFunc;
+    connection_recv_func_t recvFunc;
+    connection_deinit_func_t deinitFunc;
 } connection_t;
 
 typedef struct _lwm2m_connection_layer_t {
     lwm2m_context_t *ctx;
-    connection_t    *connList;
+    connection_t *connList;
 } lwm2m_connection_layer_t;
 
 lwm2m_connection_layer_t *connectionlayer_create(lwm2m_context_t *context);

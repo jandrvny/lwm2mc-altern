@@ -55,8 +55,9 @@
  * This object is single instance only, and is mandatory to all LWM2M device as it describe the object such as its
  * manufacturer, model, etc...
  */
-#include "client.h"
+
 #include "liblwm2m.h"
+#include "lwm2mclient.h"
 
 #include <stdio.h>
 #include <stdlib.h>

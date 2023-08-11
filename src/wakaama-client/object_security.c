@@ -49,7 +49,6 @@
 #include <string.h>
 #include <stdio.h>
 
-
 typedef struct _security_instance_
 {
     struct _security_instance_ * next;        // matches lwm2m_list_t::next

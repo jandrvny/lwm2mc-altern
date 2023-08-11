@@ -52,7 +52,6 @@
 #include <string.h>
 #include <limits.h>
 
-
 typedef struct _server_instance_
 {
     struct _server_instance_ * next;   // matches lwm2m_list_t::next

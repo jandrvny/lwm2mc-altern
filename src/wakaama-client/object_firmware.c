@@ -46,7 +46,6 @@
 #include <string.h>
 #include <ctype.h>
 
-
 // ---- private object "Firmware" specific defines ----
 // Resource Id's:
 #define RES_M_PACKAGE                   0
