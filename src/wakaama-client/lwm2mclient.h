@@ -14,15 +14,18 @@
  *    Bosch Software Innovations GmbH - Please refer to git log
  *
  *******************************************************************************/
-/*
- * lwm2mclient.h
- *
- *  General functions of lwm2m test client.
- *
- *  Created on: 22.01.2015
- *  Author: Achim Kraus
- *  Copyright (c) 2015 Bosch Software Innovations GmbH, Germany. All rights reserved.
- */
+
+/**************************************************************
+    client.h/cpp files, from lwm2mc-altern repository, is based on Wakaama 
+    respository examples and modified to fit the needs of the project.
+    Wakaama repository is available at: https://github.com/eclipse/wakaama
+    
+    The code is under the terms of the Eclipse Public License v2.0 and Eclipse 
+    Distribution License v1.0 and the previous copyright notice.
+
+    Contributor(s) :
+        Jonathan Andrianarivony <jonathan.andrianarivony@itron.com> 
+ **************************************************************/
 
 #ifndef LWM2MCLIENT_H_
 #define LWM2MCLIENT_H_

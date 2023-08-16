@@ -56,6 +56,18 @@
 
 */
 
+/**************************************************************
+    client.h/cpp files, from lwm2mc-altern repository, is based on Wakaama 
+    respository examples and modified to fit the needs of the project.
+    Wakaama repository is available at: https://github.com/eclipse/wakaama
+    
+    The code is under the terms of the Eclipse Public License v2.0 and Eclipse 
+    Distribution License v1.0 and the previous copyright notice.
+
+    Contributor(s) :
+        Jonathan Andrianarivony <jonathan.andrianarivony@itron.com> 
+ **************************************************************/
+
 #include "lwm2mclient.h"
 #include "liblwm2m.h"
 #include "commandline.h"
@@ -752,7 +764,7 @@ int main(int argc, char *argv[])
     const char * localPort = "56830";
     const char * server = NULL;
     const char * serverPort = LWM2M_STANDARD_PORT_STR;
-    const char * name = "testlwm2mclient";
+    const char * name = "ITRON_TEST_lwm2mc";
     int lifetime = 300;
     int batterylevelchanging = 0;
     time_t reboot_time = 0;

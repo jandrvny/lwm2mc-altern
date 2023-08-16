@@ -1,7 +1,8 @@
 # Wakaama notice
 ___
 *This file is part of the [lwm2mc-altern](https://github.com/jandrvny/lwm2mc-altern) project, as a part of an Itron's intern project. 
-Contributor : Jonathan Andrianarivony (jonathan.andrianarivony@itron.com).*
+Contributor(s):*
+- *Jonathan Andrianarivony (jonathan.andrianarivony@itron.com).*
 ___
 
 ## Foreword

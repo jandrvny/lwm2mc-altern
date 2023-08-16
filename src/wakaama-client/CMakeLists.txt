@@ -27,15 +27,25 @@ SET(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/object_access_control.c
 )
 
-# Client with DTLS support provided by mbedtls
+# Client without DTLS support
 add_executable(lwm2mclient
                 ${SOURCES} 
                 ${WAKAAMA_SOURCES} 
                 ${COAP_SOURCES} 
                 ${DATA_SOURCES} 
                 ${TOOLS_SOURCES})
-set_target_properties(lwm2mclient PROPERTIES DTLS "mbedtls")
 target_compile_definitions(lwm2mclient PUBLIC ${TOOLS_DEFINITIONS} LWM2M_CLIENT_MODE LWM2M_BOOTSTRAP LWM2M_SUPPORT_TLV)
 target_sources_waakama(lwm2mclient)
+
+# Client with DTLS support provided by mbedtls
+add_executable(lwm2mclient_mbedtls
+                ${SOURCES} 
+                ${WAKAAMA_SOURCES} 
+                ${COAP_SOURCES} 
+                ${DATA_SOURCES} 
+                ${TOOLS_SOURCES})
+set_target_properties(lwm2mclient_mbedtls PROPERTIES DTLS "mbedtls")
+target_compile_definitions(lwm2mclient_mbedtls PUBLIC ${TOOLS_DEFINITIONS} LWM2M_CLIENT_MODE LWM2M_BOOTSTRAP LWM2M_SUPPORT_TLV)
+target_sources_waakama(lwm2mclient_mbedtls)
 
 #SOURCE_GROUP(lwm2m-altern FILES ${WAKAAMA_SOURCES})

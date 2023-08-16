@@ -7,7 +7,8 @@
 # This file is part of the lwm2mc-altern project
 # (https://github.com/jandrvny/lwm2mc-altern), as a part of an Itron's intern 
 # project. 
-# Contributor : Jonathan Andrianarivony (jonathan.andrianarivony@itron.com)
+# Contributor(s) : 
+# - Jonathan Andrianarivony (jonathan.andrianarivony@itron.com)
 #
 # The file contains all the necessary CMake functions and variables to compile
 # all the LwM2M clients. See the README.md file for more information.
@@ -127,7 +128,8 @@ function(target_sources_tool target)
 
     get_target_property(TARGET_PROPERTY_DTLS ${target} DTLS)
 
-    if(TARGET_PROPERTY_DTLS MATCHES "mbedtls")
+    if(NOT TARGET_PROPERTY_DTLS)
+    elseif(TARGET_PROPERTY_DTLS MATCHES "mbedtls")
         target_sources(${target} PRIVATE ${TOOLS_SOURCES_DIR}/mbedtlsconnection.c)
         target_compile_definitions(${target} PRIVATE DTLS)
         target_link_libraries(${target} PRIVATE mbedtls)    
@@ -193,4 +195,4 @@ function(target_sources_waakama target)
 endfunction()
 
 
-#     target_link_libraries(${PROJECT_NAME} PRIVATE mbedtls)
+#target_link_libraries(${PROJECT_NAME} PRIVATE mbedtls)
