@@ -45,12 +45,14 @@
  *              |     |      |         |     |         |       |       | for direction: the scalar component of velocity.                                 |
  */
 
+extern "C" {
 #include "liblwm2m.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+}
 
 #ifdef LWM2M_CLIENT_MODE
 
@@ -225,7 +227,9 @@ static uint8_t prv_location_read(lwm2m_context_t *contextP,
 
 void display_location_object(lwm2m_object_t * object)
 {
-    location_data_t * data = (location_data_t *)object->userData;
+    //location_data_t * data = (location_data_t *)object->userData; // Modification for migration to CPP
+    location_data_t* data = static_cast<location_data_t*>(object->userData);
+
     fprintf(stdout, "  /%u: Location object:\r\n", object->objID);
     if (NULL != data)
     {
@@ -249,7 +253,9 @@ void location_setVelocity(lwm2m_object_t* locationObj,
                           uint8_t speedUncertainty)
 {
     //-------------------------------------------------------------------- JH --
-    location_data_t* pData = locationObj->userData;
+    // location_data_t* pData = locationObj->userData; // Modification for migration to CPP
+    location_data_t* pData = static_cast<location_data_t*>(locationObj->userData);
+
     pData->velocity[0] = HORIZONTAL_VELOCITY_WITH_UNCERTAINTY << 4;
     pData->velocity[0] |= (bearing & 0x100) >> 8;
     pData->velocity[1] = (bearing & 0x0FF);
@@ -274,7 +280,8 @@ void location_setLocationAtTime(lwm2m_object_t* locationObj,
                              uint64_t timestamp)
 {
     //-------------------------------------------------------------------- JH --
-    location_data_t* pData = locationObj->userData;
+    //location_data_t* pData = locationObj->userData; // Modification for migration to CPP
+    location_data_t* pData = static_cast<location_data_t*>(locationObj->userData);
 
     pData->latitude  = latitude;
     pData->longitude = longitude;

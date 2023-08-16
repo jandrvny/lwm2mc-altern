@@ -31,12 +31,14 @@
  *  StartOrReset         |  6 |   E   | Single|  Yes | Integer |       |       |             |
  */
 
+extern "C" {
 #include "liblwm2m.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+}
 
 // Resource Id's:
 #define RES_O_SMS_TX_COUNTER            0
@@ -235,7 +237,9 @@ lwm2m_object_t * get_object_conn_s(void)
          * The 7 is the standard ID for the optional object "Connectivity Statistics".
          */
         connObj->objID = LWM2M_CONN_STATS_OBJECT_ID;
-        connObj->instanceList = lwm2m_malloc(sizeof(lwm2m_list_t));
+        //connObj->instanceList = lwm2m_malloc(sizeof(lwm2m_list_t)); // Modification for migration to CPP
+        connObj->instanceList = static_cast<lwm2m_list_t*>(lwm2m_malloc(sizeof(lwm2m_list_t)));
+
         if (NULL != connObj->instanceList)
         {
             memset(connObj->instanceList, 0, sizeof(lwm2m_list_t));

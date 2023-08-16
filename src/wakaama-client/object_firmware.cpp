@@ -39,12 +39,14 @@
  * 9 update delivery method    read
  */
 
+extern "C" {
 #include "liblwm2m.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+}
 
 // ---- private object "Firmware" specific defines ----
 // Resource Id's:

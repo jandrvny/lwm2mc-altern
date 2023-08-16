@@ -30,8 +30,10 @@
 #ifndef LWM2MCLIENT_H_
 #define LWM2MCLIENT_H_
 
+extern "C" {
 #include "connection.h"
 #include "liblwm2m.h"
+}
 
 extern int g_reboot;
 

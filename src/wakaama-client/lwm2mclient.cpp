@@ -68,7 +68,8 @@
         Jonathan Andrianarivony <jonathan.andrianarivony@itron.com> 
  **************************************************************/
 
-#include "lwm2mclient.h"
+#include "lwm2mclient.hpp"
+extern "C" {
 #include "liblwm2m.h"
 #include "commandline.h"
 #if defined(DTLS)
@@ -92,6 +93,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+}
 
 #define MAX_PACKET_SIZE 2048
 #define DEFAULT_SERVER_IPV6 "[::1]"
@@ -501,11 +503,13 @@ static void prv_update(lwm2m_context_t * lwm2mH,
 {
     /* unused parameter */
     (void)user_data;
+    uint16_t serverId;
+    int res;
 
     if (buffer[0] == 0) goto syntax_error;
 
-    uint16_t serverId = (uint16_t) atoi(buffer);
-    int res = lwm2m_update_registration(lwm2mH, serverId, false);
+    serverId = (uint16_t) atoi(buffer);
+    res = lwm2m_update_registration(lwm2mH, serverId, false);
     if (res != 0)
     {
         fprintf(stdout, "Registration update error: ");
@@ -742,7 +746,7 @@ void print_usage(void)
     fprintf(stdout, "  -n NAME\tSet the endpoint name of the Client. Default: testlwm2mclient\r\n");
     fprintf(stdout, "  -l PORT\tSet the local UDP port of the Client. Default: 56830\r\n");
     fprintf(stdout, "  -h HOST\tSet the hostname of the LWM2M Server to connect to. Default: localhost\r\n");
-    fprintf(stdout, "  -p PORT\tSet the port of the LWM2M Server to connect to. Default: "LWM2M_STANDARD_PORT_STR"\r\n");
+    fprintf(stdout, "  -p PORT\tSet the port of the LWM2M Server to connect to. Default: " LWM2M_STANDARD_PORT_STR "\r\n");
     fprintf(stdout, "  -4\t\tUse IPv4 connection. Default: IPv6 connection\r\n");
     fprintf(stdout, "  -t TIME\tSet the lifetime of the Client. Default: 300\r\n");
     fprintf(stdout, "  -b\t\tBootstrap requested.\r\n");
@@ -953,7 +957,8 @@ int main(int argc, char *argv[])
     if (psk != NULL)
     {
         pskLen = strlen(psk) / 2;
-        pskBuffer = malloc(pskLen);
+        //pskBuffer = malloc(pskLen); // Modification for migration to CPP
+        pskBuffer = static_cast<char*>(malloc(pskLen));
 
         if (NULL == pskBuffer)
         {

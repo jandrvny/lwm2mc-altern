@@ -45,12 +45,14 @@
  *
  */
 
+extern "C" {
 #include "liblwm2m.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+}
 
 typedef struct _server_instance_
 {

@@ -56,15 +56,17 @@
  * manufacturer, model, etc...
  */
 
+#include "lwm2mclient.hpp"
+
+extern "C" {
 #include "liblwm2m.h"
-#include "lwm2mclient.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
-
+}
 
 #define PRV_MANUFACTURER      "Open Mobile Alliance"
 #define PRV_MODEL_NUMBER      "Lightweight M2M Client"

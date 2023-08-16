@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(lwm2mclient C)
+project(lwm2mclient)
 
 add_subdirectory(tools)
 include(${CMAKE_CURRENT_LIST_DIR}/../../lwm2mc-altern.cmake)
@@ -14,17 +14,17 @@ include_directories(
     ${CMAKE_CURRENT_LIST_DIR})
 
 SET(SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/lwm2mclient.c
-    ${CMAKE_CURRENT_LIST_DIR}/lwm2mclient.h
-    ${CMAKE_CURRENT_LIST_DIR}/system_api.c
-    ${CMAKE_CURRENT_LIST_DIR}/object_security.c
-    ${CMAKE_CURRENT_LIST_DIR}/object_server.c
-    ${CMAKE_CURRENT_LIST_DIR}/object_device.c
-    ${CMAKE_CURRENT_LIST_DIR}/object_firmware.c
-    ${CMAKE_CURRENT_LIST_DIR}/object_location.c
-    ${CMAKE_CURRENT_LIST_DIR}/object_connectivity_moni.c
-    ${CMAKE_CURRENT_LIST_DIR}/object_connectivity_stat.c
-    ${CMAKE_CURRENT_LIST_DIR}/object_access_control.c
+    ${CMAKE_CURRENT_LIST_DIR}/lwm2mclient.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/lwm2mclient.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/system_api.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/object_security.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/object_server.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/object_device.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/object_firmware.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/object_location.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/object_connectivity_moni.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/object_connectivity_stat.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/object_access_control.cpp
 )
 
 # Client without DTLS support
