@@ -20,6 +20,17 @@
  *    Scott Bertin, AMETEK, Inc. - Please refer to git log
  *
  *******************************************************************************/
+/**************************************************************
+    This file, from lwm2mc-altern repository, is based on Wakaama 
+    respository examples and modified to fit the needs of the project.
+    Wakaama repository is available at: https://github.com/eclipse/wakaama
+    
+    The code is under the terms of the Eclipse Public License v2.0 and Eclipse 
+    Distribution License v1.0 and the previous copyright notice.
+
+    Contributor(s) :
+        Jonathan Andrianarivony <jonathan.andrianarivony@itron.com> 
+ **************************************************************/
 
 /*
  * This object is single instance only, and provide firmware upgrade functionality.

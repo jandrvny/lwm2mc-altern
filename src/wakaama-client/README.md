@@ -43,8 +43,8 @@ This client uses the following libraries:
           +- lwm2mclient.c/h    These files host the necessary code to operate the client
           |                     (contain the main function).
           |
-          +- object.c files     These files host the necessary code to implement the LwM2M 
-          |                     objects associated with the client.
+          +- object_[...].c     These files host the necessary code to implement the LwM2M 
+          |                     objects associated to the client.
           |
           +- tools/             This directory contains the code implementing MbedTLS 
                 |               instead of TinyDTLS. The included files are based on the
@@ -125,7 +125,7 @@ Options:
 
 ```
 
-Additional values for the lwm2mclient_tinydtls binary:
+Additional values for the lwm2mclient_mbedtls binary:
 ```
   -i Set the device management or bootstrap server PSK identity. If not set use none secure mode
   -s Set the device management or bootstrap server Pre-Shared-Key. If not set use none secure mode

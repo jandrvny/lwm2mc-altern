@@ -16,7 +16,7 @@
  *******************************************************************************/
 
 /**************************************************************
-    client.h/cpp files, from lwm2mc-altern repository, is based on Wakaama 
+    lwm2mclient.hpp/cpp files, from lwm2mc-altern repository, is based on Wakaama 
     respository examples and modified to fit the needs of the project.
     Wakaama repository is available at: https://github.com/eclipse/wakaama
     
